@@ -10,6 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Date;
 import java.util.HashMap;
 
 @Service
@@ -25,10 +29,12 @@ public class AuthenticationService {
 
       Account currentUser = accountService.getAccountByUsername(authentication.getName());
 
+      LocalDateTime expiresIn = LocalDateTime.now().plusSeconds(1296000L);
+
       RefreshToken savedRefreshToken = RefreshToken.builder()
               .refreshToken(tokens.get("refreshToken").toString())
               .account(currentUser)
-              .expiresIn(1296000L)
+              .expiresIn(expiresIn)
               .build();
 
       refreshTokenService.save(savedRefreshToken);

@@ -1,6 +1,5 @@
 package com.keypass.server.token;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -25,11 +24,11 @@ public class RefreshToken {
   @Id @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @Column(nullable = false, unique = true)
+  @Column(nullable = false, unique = true, columnDefinition = "TEXT")
   private String refreshToken;
 
   @Column(nullable = false)
-  private Long expiresIn;
+  private LocalDateTime expiresIn;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "account_id", referencedColumnName = "id")
