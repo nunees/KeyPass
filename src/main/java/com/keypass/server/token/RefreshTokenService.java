@@ -1,5 +1,7 @@
 package com.keypass.server.token;
 
+import com.keypass.server.account.Account;
+
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -9,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 public class RefreshTokenService {
   private final RefreshTokenRepository refreshTokenRepository;
 
-  public void save(RefreshToken refreshToken) {
+  public RefreshToken save(RefreshToken refreshToken) {
+
+      return refreshTokenRepository.save(refreshToken);
 
   }
 

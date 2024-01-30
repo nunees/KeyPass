@@ -29,7 +29,6 @@ public class AccountController {
   @PostMapping("/register")
   public ResponseEntity<Object> create(@RequestBody AccountRequestDto accountRequestDto) {
     try{
-
       String hashedPassword = new BCryptPasswordEncoder().encode(accountRequestDto.password()).toString();
       Account newAccount = Account.builder()
         .firstName(accountRequestDto.firstName())

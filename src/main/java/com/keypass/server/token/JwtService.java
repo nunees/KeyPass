@@ -1,8 +1,10 @@
 package com.keypass.server.token;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 
+import com.keypass.server.account.AccountService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,7 +14,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
 @Service
-public class old_JWTSERVICE {
+public class JwtService {
     private final JwtEncoder encoder;
 
     @Value("${application.security.jwt.access.token.expiresIn}")
@@ -24,17 +26,17 @@ public class old_JWTSERVICE {
     @Value("${application.security.jwt.issuer}")
     private String tokenIssuer;
 
-    public old_JWTSERVICE(JwtEncoder encoder) {
+    public JwtService(JwtEncoder encoder, RefreshTokenService refreshTokenService, AccountService accountService) {
         this.encoder = encoder;
     }
 
-    public String generateToken(Authentication authentication){
+    public HashMap<String, Object> generateToken(Authentication authentication){
         Instant now = Instant.now();
 
         String scopes = authentication.getAuthorities()
                 .stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(" "));
 
-        var claims = JwtClaimsSet.builder()
+        var access_claims = JwtClaimsSet.builder()
                 .issuer(tokenIssuer)
                 .issuedAt(now)
                 .expiresAt(now.plusSeconds(accessTokenExpiresIn))
@@ -42,6 +44,21 @@ public class old_JWTSERVICE {
                 .claim("scope", scopes)
                 .build();
 
-        return encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        var refresh_claims = JwtClaimsSet.builder()
+                .issuer(tokenIssuer)
+                .issuedAt(now)
+                .expiresAt(now.plusSeconds(accessTokenExpiresIn))
+                .subject(authentication.getName())
+                .claim("scope", scopes)
+                .build();
+
+        String accessToken = encoder.encode(JwtEncoderParameters.from(access_claims)).getTokenValue();
+        String refreshToken = encoder.encode(JwtEncoderParameters.from(refresh_claims)).getTokenValue();
+
+        HashMap<String, Object> tokens = new HashMap<>();
+        tokens.put("accessToken", accessToken);
+        tokens.put("refreshToken", refreshToken);
+
+        return tokens;
     }
 }

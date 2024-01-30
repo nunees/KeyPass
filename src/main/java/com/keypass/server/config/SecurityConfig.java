@@ -44,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers("accounts/register").permitAll()
                         .requestMatchers("swagger-ui/**").permitAll()
                         .requestMatchers("v3/api-docs/**").permitAll()
+                        .requestMatchers("h2-console/**").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .oauth2ResourceServer(conf->conf.jwt(Customizer.withDefaults()))

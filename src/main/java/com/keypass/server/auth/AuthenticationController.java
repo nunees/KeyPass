@@ -1,6 +1,7 @@
 package com.keypass.server.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,8 +17,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.HashMap;
+
 @RestController
-@RequestMapping(value = "/sessions", produces = "application/json")
+@RequestMapping("/sessions")
 @Tag(name = "Sessions", description = "Create and manage user sessions")
 @RequiredArgsConstructor
 public class AuthenticationController {
@@ -30,20 +33,16 @@ public class AuthenticationController {
   @Operation(summary = "Create a new session")
   @ApiResponses(value = {
     @ApiResponse(responseCode = "200", description = "Session created"),
-    @ApiResponse(responseCode = "500", description = "Bad Request"),
+    @ApiResponse(responseCode = "400", description = "Bad Request"),
     @ApiResponse(responseCode = "401", description = "Unauthorized")
   })
   @PostMapping("/new")
   public ResponseEntity<Object> authenticate(@RequestBody AuthenticationRequestDto authenticationRequestDto) {
-    try{
       Authentication authentication = authenticationManager
-    .authenticate(new UsernamePasswordAuthenticationToken(
-      authenticationRequestDto.username(),
-      authenticationRequestDto.password()));
-    return ResponseEntity.ok(authenticationService.authenticate(authentication));
-    } catch (Exception e) {
-      return ResponseEntity.badRequest().build();
-    }
+        .authenticate(new UsernamePasswordAuthenticationToken(
+          authenticationRequestDto.username(),
+          authenticationRequestDto.password()));
+    return ResponseEntity.ok( authenticationService.authenticate(authentication));
   }
 
 }

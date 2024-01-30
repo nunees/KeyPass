@@ -1,4 +1,11 @@
-FROM ubuntu:latest
-LABEL authors="felipe"
-
-ENTRYPOINT ["top", "-b"]
+services:
+  postgres:
+    image: postgres:latest
+    container_name: "keypass_db"
+    restart: always
+    environment:
+      - "POSTGRES_DB=keypass"
+      - "POSTGRES_PASSWORD=docker"
+      - "POSTGRES_USER=docker"
+    ports:
+      - "5432:5432"
