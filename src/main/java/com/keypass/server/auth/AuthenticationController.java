@@ -1,6 +1,5 @@
 package com.keypass.server.auth;
 
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -9,22 +8,31 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
 @RestController
-@RequestMapping("/sessions")
+@RequestMapping(value = "/sessions", produces = "application/json")
+@Tag(name = "Sessions", description = "Create and manage user sessions")
 @RequiredArgsConstructor
 public class AuthenticationController {
   private final AuthenticationService authenticationService;
 
   @Autowired
   private final AuthenticationManager authenticationManager;
-  private final Logger logger = org.slf4j.LoggerFactory.getLogger(AuthenticationController.class);
 
 
+  @Operation(summary = "Create a new session")
+  @ApiResponses(value = {
+    @ApiResponse(responseCode = "200", description = "Session created"),
+    @ApiResponse(responseCode = "500", description = "Bad Request"),
+    @ApiResponse(responseCode = "401", description = "Unauthorized")
+  })
   @PostMapping("/new")
   public ResponseEntity<Object> authenticate(@RequestBody AuthenticationRequestDto authenticationRequestDto) {
     try{
@@ -34,7 +42,6 @@ public class AuthenticationController {
       authenticationRequestDto.password()));
     return ResponseEntity.ok(authenticationService.authenticate(authentication));
     } catch (Exception e) {
-      logger.error("Error authenticating user", e);
       return ResponseEntity.badRequest().build();
     }
   }

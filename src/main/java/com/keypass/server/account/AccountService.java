@@ -2,7 +2,6 @@ package com.keypass.server.account;
 
 import java.util.UUID;
 
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
