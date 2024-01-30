@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 public class UserAuthenticated implements UserDetails {
   private final Account account;
 
-
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     // TODO Auto-generated method stub

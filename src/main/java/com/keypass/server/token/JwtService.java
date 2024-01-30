@@ -3,7 +3,6 @@ package com.keypass.server.token;
 import java.time.Instant;
 import java.util.stream.Collectors;
 
-import org.hibernate.engine.jdbc.env.internal.LobCreationLogging_.logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;

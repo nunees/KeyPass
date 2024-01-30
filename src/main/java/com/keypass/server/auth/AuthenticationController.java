@@ -2,6 +2,7 @@ package com.keypass.server.auth;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,12 +26,17 @@ public class AuthenticationController {
 
 
   @PostMapping("/new")
-  public Object authenticate(@RequestBody AuthenticationRequestDto authenticationRequestDto) {
-    Authentication authentication = authenticationManager
+  public ResponseEntity<Object> authenticate(@RequestBody AuthenticationRequestDto authenticationRequestDto) {
+    try{
+      Authentication authentication = authenticationManager
     .authenticate(new UsernamePasswordAuthenticationToken(
       authenticationRequestDto.username(),
       authenticationRequestDto.password()));
-    return authenticationService.authenticate(authentication);
+    return ResponseEntity.ok(authenticationService.authenticate(authentication));
+    } catch (Exception e) {
+      logger.error("Error authenticating user", e);
+      return ResponseEntity.badRequest().build();
+    }
   }
 
 }

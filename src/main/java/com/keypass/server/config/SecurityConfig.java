@@ -41,9 +41,9 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         return http.authorizeHttpRequests(auth -> auth
                         .requestMatchers("sessions/**").permitAll()
-                        .requestMatchers("accounts/new").permitAll()
+                        .requestMatchers("accounts/register").permitAll()
                         .anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults())
+                .httpBasic(AbstractHttpConfigurer::disable)
                 .oauth2ResourceServer(conf->conf.jwt(Customizer.withDefaults()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .build();
