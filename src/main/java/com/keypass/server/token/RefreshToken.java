@@ -14,18 +14,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @Entity
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "refresh_tokens")
 public class RefreshToken {
 
-  @Id @GeneratedValue(strategy = GenerationType.UUID)
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @Column(nullable = false, unique = true, columnDefinition = "TEXT")
-  private String refreshToken;
+  @Lob
+  private String token;
 
   @Column(nullable = false)
   private LocalDateTime expiresIn;

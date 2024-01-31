@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
+import com.keypass.server.account.Account;
 import com.keypass.server.account.AccountService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -30,7 +31,7 @@ public class JwtService {
         this.encoder = encoder;
     }
 
-    public HashMap<String, Object> generateToken(Authentication authentication){
+    public HashMap<String, Object> generateToken(Authentication authentication) {
         Instant now = Instant.now();
 
         String scopes = authentication.getAuthorities()
@@ -47,7 +48,7 @@ public class JwtService {
         var refresh_claims = JwtClaimsSet.builder()
                 .issuer(tokenIssuer)
                 .issuedAt(now)
-                .expiresAt(now.plusSeconds(accessTokenExpiresIn))
+                .expiresAt(now.plusSeconds(refreshTokenExpiresIn))
                 .subject(authentication.getName())
                 .claim("scope", scopes)
                 .build();
@@ -61,4 +62,36 @@ public class JwtService {
 
         return tokens;
     }
+
+    public HashMap<String, Object> generateTokensWithoutAuth(Account account) {
+        Instant now = Instant.now();
+
+        String scopes = "user";
+
+        var access_claims = JwtClaimsSet.builder()
+                .issuer(tokenIssuer)
+                .issuedAt(now)
+                .expiresAt(now.plusSeconds(accessTokenExpiresIn))
+                .subject(account.getUsername())
+                .claim("scope", scopes)
+                .build();
+
+        var refresh_claims = JwtClaimsSet.builder()
+                .issuer(tokenIssuer)
+                .issuedAt(now)
+                .expiresAt(now.plusSeconds(refreshTokenExpiresIn))
+                .subject(account.getUsername())
+                .claim("scope", scopes)
+                .build();
+
+        String accessToken = encoder.encode(JwtEncoderParameters.from(access_claims)).getTokenValue();
+        String refreshToken = encoder.encode(JwtEncoderParameters.from(refresh_claims)).getTokenValue();
+
+        HashMap<String, Object> tokens = new HashMap<>();
+        tokens.put("accessToken", accessToken);
+        tokens.put("refreshToken", refreshToken);
+
+        return tokens;
+    }
+
 }
