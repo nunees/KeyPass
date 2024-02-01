@@ -6,11 +6,15 @@ import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.keypass.server.vault.Vault;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,6 +42,10 @@ public class Credential {
 
   @Column(nullable = false)
   private String password;
+
+  @ManyToOne
+  @JoinColumn(name = "vault_id", referencedColumnName = "id")
+  private Vault vault;
 
   @CreationTimestamp
   private LocalDateTime createdAt;
