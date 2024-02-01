@@ -1,4 +1,4 @@
-package com.keypass.server.auth;
+package com.keypass.server.authentication;
 
 import java.util.Collection;
 import java.util.List;

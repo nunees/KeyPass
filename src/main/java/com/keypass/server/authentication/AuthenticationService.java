@@ -1,4 +1,4 @@
-package com.keypass.server.auth;
+package com.keypass.server.authentication;
 
 import com.keypass.server.account.Account;
 import com.keypass.server.account.AccountService;

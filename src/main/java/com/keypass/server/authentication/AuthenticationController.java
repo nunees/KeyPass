@@ -1,4 +1,4 @@
-package com.keypass.server.auth;
+package com.keypass.server.authentication;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

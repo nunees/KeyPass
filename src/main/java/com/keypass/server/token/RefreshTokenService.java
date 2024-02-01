@@ -1,9 +1,14 @@
 package com.keypass.server.token;
 
+import com.keypass.server.account.Account;
+import com.keypass.server.account.AccountService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.UUID;
 
 @Service
@@ -15,8 +20,8 @@ public class RefreshTokenService {
         refreshTokenRepository.save(refreshToken);
     }
 
-    public RefreshToken getRefreshTokenByHash(String refreshTokenHash) {
-        return refreshTokenRepository.findByToken(refreshTokenHash);
+    public RefreshToken findRefreshTokenByUserId(String userId){
+        return refreshTokenRepository.findByAccountId((UUID.fromString(userId))).orElseThrow();
     }
 
     public RefreshToken findById(String id) {
