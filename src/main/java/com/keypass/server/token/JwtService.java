@@ -31,7 +31,7 @@ public class JwtService {
         this.encoder = encoder;
     }
 
-    public HashMap<String, Object> generateToken(Authentication authentication) {
+    public HashMap<String, Object> generateTokens(Authentication authentication) {
         Instant now = Instant.now();
 
         String scopes = authentication.getAuthorities()
@@ -93,5 +93,27 @@ public class JwtService {
 
         return tokens;
     }
+
+    public HashMap<String, Object> generateAcessTokenWithoutAuth(Account account) {
+        Instant now = Instant.now();
+
+        String scopes = "user";
+
+        var access_claims = JwtClaimsSet.builder()
+                .issuer(tokenIssuer)
+                .issuedAt(now)
+                .expiresAt(now.plusSeconds(accessTokenExpiresIn))
+                .subject(account.getUsername())
+                .claim("scope", scopes)
+                .build();
+
+        String accessToken = encoder.encode(JwtEncoderParameters.from(access_claims)).getTokenValue();
+
+        HashMap<String, Object> token = new HashMap<>();
+        token.put("accessToken", accessToken);
+
+        return token;
+    }
+
 
 }

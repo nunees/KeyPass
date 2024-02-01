@@ -29,35 +29,48 @@ public class RefreshTokenController {
       @ApiResponse(responseCode = "200", description = "Refresh token created"),
   })
   @PostMapping("/new/{userId}")
-  public ResponseEntity<Object> create(@PathVariable("userId") String userId, @RequestBody RefreshTokenRequestDto refreshTokenRequestDto) {
-    Account account = accountService.getAccountById(userId);
-    if (account == null) {
-      return ResponseEntity.badRequest().body("This refresh token does not belong to you");
-    }
+  public ResponseEntity<Object> create(@PathVariable("userId") String userId,
+      @RequestBody RefreshTokenRequestDto refreshTokenRequestDto) {
+    try {
+      Account account = accountService.getAccountById(userId);
+      if (account == null) {
+        return ResponseEntity.badRequest().body("This refresh token does not belong to you");
+      }
 
-    RefreshToken storedRefreshToken = refreshTokenService.findRefreshTokenByUserId(account.getId().toString());
-    if (storedRefreshToken == null) {
-      return ResponseEntity.badRequest().body("Invalid refresh token");
-    }
+      RefreshToken storedRefreshToken = refreshTokenService.findRefreshTokenByUserId(account.getId().toString());
+      if (storedRefreshToken == null) {
+        return ResponseEntity.badRequest().body("Invalid refresh token");
+      }
 
-    if(refreshTokenRequestDto.refreshToken().length() != storedRefreshToken.getToken().length()){
-      return ResponseEntity.badRequest().body("Size mismatch");
-    }
+      if (refreshTokenRequestDto.refreshToken().length() != storedRefreshToken.getToken().length()) {
+        return ResponseEntity.status(401).body("Unkonwn data format");
+      }
 
-    refreshTokenService.deleteRefreshToken(storedRefreshToken.getId());
+      if (!storedRefreshToken.getToken().equals(refreshTokenRequestDto.refreshToken())) {
+        return ResponseEntity.status(401).body("Invalid refresh token");
+      }
 
-    HashMap<String, Object> keys =  jwtService.generateTokensWithoutAuth(account);
+      if (refreshTokenService.isRefreshTokenExpired(storedRefreshToken)) {
+        refreshTokenService.deleteRefreshToken(storedRefreshToken.getId());
+        HashMap<String, Object> keys = jwtService.generateTokensWithoutAuth(account);
 
-    RefreshToken databaseTokenGenerated = RefreshToken.builder()
+        RefreshToken databaseTokenGenerated = RefreshToken.builder()
             .token(keys.get("refreshToken").toString())
             .account(account)
             .expiresIn(LocalDateTime.now().plusSeconds(1296000L))
             .build();
 
-    System.out.println(databaseTokenGenerated);
+        refreshTokenService.save(databaseTokenGenerated);
+        return ResponseEntity.ok().body(keys);
+      }
 
-    refreshTokenService.save(databaseTokenGenerated);
+      if (refreshTokenService.isRefreshTokenRevoked(storedRefreshToken)) {
+        return ResponseEntity.status(401).body("Refresh token has been revoked, you need to login again");
+      }
 
-    return ResponseEntity.ok().body(keys);
+      return ResponseEntity.ok().body(jwtService.generateAcessTokenWithoutAuth(account));
+    } catch (Exception e) {
+      return ResponseEntity.badRequest().body("An internal error has occurred");
+    }
   }
 }

@@ -22,7 +22,7 @@ public class AuthenticationService {
 
   public Object authenticate(Authentication authentication) {
 
-    HashMap<String, Object> tokens = jwtService.generateToken(authentication);
+    HashMap<String, Object> tokens = jwtService.generateTokens(authentication);
 
     Account currentUser = accountService.getAccountByUsername(authentication.getName());
 

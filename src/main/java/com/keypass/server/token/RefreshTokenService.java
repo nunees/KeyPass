@@ -20,7 +20,7 @@ public class RefreshTokenService {
         refreshTokenRepository.save(refreshToken);
     }
 
-    public RefreshToken findRefreshTokenByUserId(String userId){
+    public RefreshToken findRefreshTokenByUserId(String userId) {
         return refreshTokenRepository.findByAccountId((UUID.fromString(userId))).orElseThrow();
     }
 
@@ -31,6 +31,14 @@ public class RefreshTokenService {
 
     public RefreshToken getRefreshTokenById(UUID id) {
         return refreshTokenRepository.findById(id).orElseThrow();
+    }
+
+    public boolean isRefreshTokenExpired(RefreshToken refreshToken) {
+        return refreshToken.getExpiresIn().isBefore(LocalDateTime.now());
+    }
+
+    public boolean isRefreshTokenRevoked(RefreshToken refreshToken) {
+        return refreshToken.isRevoked();
     }
 
     public void deleteRefreshToken(UUID refreshTokenId) {
