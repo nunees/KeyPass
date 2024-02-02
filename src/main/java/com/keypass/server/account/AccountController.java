@@ -1,11 +1,12 @@
 package com.keypass.server.account;
 
+import com.keypass.server.exception.AccountControllerException.AccountControllerException;
+import jdk.jfr.ContentType;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,8 +14,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+import javax.print.attribute.standard.Media;
+
 @RestController
-@RequestMapping(value = "/accounts", produces = "application/json")
+@RequestMapping(value = "/accounts")
 @Tag(name = "Accounts", description = "Create and manage user accounts")
 @RequiredArgsConstructor
 public class AccountController {
@@ -26,10 +29,10 @@ public class AccountController {
     @ApiResponse(responseCode = "401", description = "User Already Exists"),
     @ApiResponse(responseCode = "500", description = "Bad Request")
   })
-  @PostMapping("/register")
+  @PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Object> create(@RequestBody AccountRequestDto accountRequestDto) {
     try{
-      String hashedPassword = new BCryptPasswordEncoder().encode(accountRequestDto.password()).toString();
+      String hashedPassword = new BCryptPasswordEncoder().encode(accountRequestDto.password());
       Account newAccount = Account.builder()
         .firstName(accountRequestDto.firstName())
         .lastName(accountRequestDto.lastName())
@@ -37,8 +40,9 @@ public class AccountController {
         .password(hashedPassword)
         .email(accountRequestDto.email())
         .build();
-    return ResponseEntity.ok(accountService.create(newAccount));
-    } catch (Exception e) {
+    //return ResponseEntity.ok(accountService.create(newAccount));
+      return ResponseEntity.status(201).body(null);
+    } catch (AccountControllerException e) {
       return ResponseEntity.badRequest().body(e.getMessage());
     }
   }

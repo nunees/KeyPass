@@ -27,7 +27,6 @@ class AccountServiceUnitTest {
 
     @Test
     @DisplayName("Should be able to create a new account and return")
-    @Order(1)
     void shouldBeAbleToCreateANewAccountAndReturn() {
         //given
         Account account = Account.builder()
@@ -48,8 +47,7 @@ class AccountServiceUnitTest {
     }
 
     @Test
-    @DisplayName("Should be able to get a account by ID")
-    @Order(2)
+    @DisplayName("Should be able to get a account by Id")
     void shouldBeAbleToGetAAccountById() {
         // given
         final UUID id = UUID.randomUUID();
@@ -78,15 +76,13 @@ class AccountServiceUnitTest {
         final Optional<Account> expected = underTest.getAccountById(id.toString());
         final Account storedMockedData = expected.get();
 
-        System.out.println(storedMockedData);
-
        assertThat(expected).isNotNull();
        assertThat(storedMockedData).hasFieldOrProperty("id");
     }
 
     @Test
     @DisplayName("Should be able to get a account by username")
-    void shouldBeAbleToGetAAccountByUsername() {
+    void shouldBeAbleToGetAccountByUsername() {
         final Account mockAccount = Account.builder()
                 .firstName("John")
                 .lastName("Doe")
@@ -117,7 +113,7 @@ class AccountServiceUnitTest {
 
     @Test
     @DisplayName("Should be able to get a account by email")
-    void shouldBeAbleToGetAAccountByEmail() {
+    void shouldBeAbleToGetAccountByEmail() {
         final Account mockAccount = Account.builder()
                 .firstName("John")
                 .lastName("Doe")
