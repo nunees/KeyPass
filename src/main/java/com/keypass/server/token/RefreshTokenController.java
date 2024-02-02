@@ -32,10 +32,7 @@ public class RefreshTokenController {
   public ResponseEntity<Object> create(@PathVariable("userId") String userId,
       @RequestBody RefreshTokenRequestDto refreshTokenRequestDto) {
     try {
-      Account account = accountService.getAccountById(userId);
-      if (account == null) {
-        return ResponseEntity.badRequest().body("This refresh token does not belong to you");
-      }
+      Account account = accountService.getAccountById(userId).orElseThrow();
 
       RefreshToken storedRefreshToken = refreshTokenService.findRefreshTokenByUserId(account.getId().toString());
       if (storedRefreshToken == null) {

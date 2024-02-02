@@ -18,10 +18,7 @@ public class VaultController {
 
   @PostMapping("/new/{userId}")
   public ResponseEntity<Object> createNewVault(@RequestBody VaultRequestDto vaultRequestDto, @PathVariable String userId){
-    Account account = accountService.getAccountById(userId);
-    if(account == null){
-      return ResponseEntity.status(400).body("There was an error fetching user");
-    }
+    Account account = accountService.getAccountById(userId).orElseThrow();
 
     if(!vaultRequestDto.password().equals(vaultRequestDto.confirmPassword())){
       return ResponseEntity.status(400).body("Password mismatch");

@@ -1,5 +1,6 @@
 package com.keypass.server.account;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -15,9 +16,9 @@ public class AccountService {
     return accountRepository.save(account);
   }
 
-  public Account getAccountById(String id) {
+  public Optional<Account> getAccountById(String id) {
     UUID user_id = UUID.fromString(id);
-    return accountRepository.findById(user_id).orElseThrow(() -> new RuntimeException("User not found"));
+    return accountRepository.findById(user_id);
   }
 
   public Account getAccountByUsername(String username) {
