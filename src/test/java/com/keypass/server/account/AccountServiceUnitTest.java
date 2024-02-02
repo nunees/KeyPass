@@ -5,15 +5,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,29 +24,19 @@ class AccountServiceUnitTest {
     @InjectMocks
     private AccountService underTest;
 
-    private UUID userId;
 
-    private Account account;
-
-    @BeforeEach
-    void setUp(){
-        userId =  UUID.randomUUID();
-        account = Account.builder()
-                .id(userId)
+    @Test
+    @DisplayName("Should be able to create a new account and return")
+    @Order(1)
+    void shouldBeAbleToCreateANewAccountAndReturn() {
+        //given
+        Account account = Account.builder()
                 .firstName("John")
                 .lastName("Doe")
                 .username("johndoe123")
                 .email("johndoe@test.com")
                 .password(new BCryptPasswordEncoder().encode("123123"))
                 .build();
-    }
-
-    @Test
-    @DisplayName("Test that create a new account")
-    @Order(1)
-    void testThatCreateANewAccount() {
-        //given
-
         //when
         underTest.create(account);
 
@@ -59,23 +48,101 @@ class AccountServiceUnitTest {
     }
 
     @Test
-    @DisplayName("Test that get account by id")
+    @DisplayName("Should be able to get a account by ID")
     @Order(2)
-    void testThatGetAccountById() {
-        System.out.println(accountRepository.save(account));
-        Account savedMock = accountRepository.findById(userId).orElseThrow();
+    void shouldBeAbleToGetAAccountById() {
+        // given
+        final UUID id = UUID.randomUUID();
+        final Account mockAccount = Account.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .username("johndoe123")
+                .email("johndoe@test.com")
+                .password(new BCryptPasswordEncoder().encode("123123"))
+                .build();
 
+        underTest.create(mockAccount);
+
+        // when
+        when(accountRepository.findById(id))
+                .thenReturn(Optional.of(
+                        Account.builder()
+                                .firstName("John")
+                                .lastName("Doe")
+                                .username("johndoe123")
+                                .email("johndoe@test.com")
+                                .password(new BCryptPasswordEncoder().encode("123123"))
+                                .build()
+                ));
+
+        final Optional<Account> expected = underTest.getAccountById(id.toString());
+        final Account storedMockedData = expected.get();
+
+        System.out.println(storedMockedData);
+
+       assertThat(expected).isNotNull();
+       assertThat(storedMockedData).hasFieldOrProperty("id");
     }
 
     @Test
-    @Disabled
-    void getAccountByUsername() {
-        underTest.create(account);
-        when(accountRepository.findByEmail("johndoe@test.com").get()).thenReturn(account);
+    @DisplayName("Should be able to get a account by username")
+    void shouldBeAbleToGetAAccountByUsername() {
+        final Account mockAccount = Account.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .username("johndoe123")
+                .email("johndoe@test.com")
+                .password(new BCryptPasswordEncoder().encode("123123"))
+                .build();
+
+        underTest.create(mockAccount);
+
+        // when
+        when(accountRepository.findByUsername("johndoe123"))
+                .thenReturn(Optional.of(
+                        Account.builder()
+                                .firstName("John")
+                                .lastName("Doe")
+                                .username("johndoe123")
+                                .email("johndoe@test.com")
+                                .password(new BCryptPasswordEncoder().encode("123123"))
+                                .build()
+                ));
+
+        final Account expected = underTest.getAccountByUsername("johndoe123");
+
+        assertThat(expected).isNotNull();
+        assertThat(expected).hasFieldOrProperty("id");
     }
 
     @Test
-    @Disabled
-    void getAccountByEmail() {
+    @DisplayName("Should be able to get a account by email")
+    void shouldBeAbleToGetAAccountByEmail() {
+        final Account mockAccount = Account.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .username("johndoe123")
+                .email("johndoe@test.com")
+                .password(new BCryptPasswordEncoder().encode("123123"))
+                .build();
+
+        underTest.create(mockAccount);
+
+        // when
+        when(accountRepository.findByEmail("johndoe@test.com"))
+                .thenReturn(Optional.of(
+                        Account.builder()
+                                .firstName("John")
+                                .lastName("Doe")
+                                .username("johndoe123")
+                                .email("johndoe@test.com")
+                                .password(new BCryptPasswordEncoder().encode("123123"))
+                                .build()
+                ));
+
+        final Account expected = underTest.getAccountByEmail("johndoe@test.com");
+
+        assertThat(expected).isNotNull();
+        assertThat(expected).hasFieldOrProperty("id");
     }
 }
