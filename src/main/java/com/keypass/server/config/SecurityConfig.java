@@ -44,6 +44,7 @@ public class SecurityConfig {
                 .requestMatchers("sessions/**").permitAll()
                 .requestMatchers("refresh-token/**").permitAll()
                 .requestMatchers("accounts/register").permitAll()
+                .requestMatchers("api-docs/**").permitAll()
                 .requestMatchers("swagger-ui/**").permitAll()
                 .requestMatchers("v3/api-docs/**").permitAll()
                 .requestMatchers("h2-console/**").permitAll()

@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
-
-import javax.print.attribute.standard.Media;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -27,8 +24,8 @@ class AccountControllerTest {
     private Account mockedAccount;
 
     @BeforeEach
-    public void setUp(){
-        mockedAccount =  Account.builder()
+    public void setUp() {
+        mockedAccount = Account.builder()
                 .firstName("John")
                 .lastName("Doe")
                 .username("johndoe123")
@@ -36,6 +33,8 @@ class AccountControllerTest {
                 .password("123123")
                 .build();
     }
+
+    @SuppressWarnings("null")
     @Test
     @DisplayName("Test controller that successfully creates a new account [POST]")
     void testControllerThatSuccessfullyCreatesNewAccount() throws Exception {

@@ -3,19 +3,19 @@ package com.keypass.server.account;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class AccountService {
   private final AccountRepository accountRepository;
 
-  public Account create(@NotNull Account account) {
-    if(accountRepository.findByEmail(account.getEmail()).isPresent()
-            || accountRepository.findByUsername(account.getUsername()).isPresent()){
+  public Account create(Account account) {
+    if (accountRepository.findByEmail(account.getEmail()).isPresent()
+        || accountRepository.findByUsername(account.getUsername()).isPresent()) {
       return null;
     }
     return accountRepository.save(account);
@@ -31,6 +31,10 @@ public class AccountService {
 
   public Account getAccountByEmail(String email) {
     return accountRepository.findByEmail(email).orElseThrow();
+  }
+
+  public void deleteAccountById(String id) {
+    accountRepository.deleteById(UUID.fromString(id));
   }
 
 }
