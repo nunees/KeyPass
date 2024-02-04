@@ -40,16 +40,25 @@ public class AccountController {
     try {
       String hashedPassword = new BCryptPasswordEncoder().encode(accountRequestDto.password());
       Account newAccount = Account.builder()
-          .firstName(accountRequestDto.firstName())
-          .lastName(accountRequestDto.lastName())
-          .username(accountRequestDto.username())
-          .password(hashedPassword)
-          .email(accountRequestDto.email())
-          .build();
+              .firstName(accountRequestDto.firstName())
+              .lastName(accountRequestDto.lastName())
+              .username(accountRequestDto.username())
+              .password(hashedPassword)
+              .email(accountRequestDto.email())
+              .build();
 
-      accountService.create(newAccount);
+      Account userCreated = accountService.create(newAccount);
 
-      return ResponseEntity.status(201).body(null);
+      AccountResponseDto response = new AccountResponseDto(
+              userCreated.getId(),
+              userCreated.getFirstName(),
+              userCreated.getLastName(),
+              userCreated.getUsername(),
+              userCreated.getEmail()
+      );
+
+      return ResponseEntity.status(201).body(response);
+
     } catch (AccountControllerException e) {
       return ResponseEntity.badRequest().body(e.getMessage());
     }
