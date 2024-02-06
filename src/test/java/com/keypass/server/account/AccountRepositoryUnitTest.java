@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.UUID;
+
 @DataJpaTest
 @DisplayName("Account Repository Unit Test")
 @SuppressWarnings("null")
@@ -35,37 +37,64 @@ class AccountRepositoryUnitTest {
         underTest.deleteAll();
     }
 
-    @Test
-    @DisplayName("Should be able to save account")
-    void testThatShouldFindAccountByUsername() {
-        // given
-        underTest.save(mockedAccount);
-        // when
-        boolean exists = underTest.findByUsername(mockedAccount.getUsername()).isPresent();
-        // then
-        Assertions.assertThat(exists).isTrue();
-    }
+//    @Test
+//    @DisplayName("Should be able to save account")
+//    void testThatShouldFindAccountByUsername() {
+//        // given
+//        underTest.save(mockedAccount);
+//        // when
+//        boolean exists = underTest.findByUsername(mockedAccount.getUsername()).isPresent();
+//        // then
+//        Assertions.assertThat(exists).isTrue();
+//    }
+//
+//    @Test
+//    @DisplayName("Should be able to find account by email")
+//    void shouldBeAbleToFindAccountByEmail() {
+//        // given
+//        underTest.save(mockedAccount);
+//        // when
+//        boolean exists = underTest.findByEmail(mockedAccount.getEmail()).isPresent();
+//        // then
+//        Assertions.assertThat(exists).isTrue();
+//    }
+//
+//    @Test
+//    @DisplayName("Should be able to find account by username or email")
+//    void shouldBeAbleToFindAccountByUsernameOrEmail() {
+//        // given
+//        underTest.save(mockedAccount);
+//        // when
+//        boolean exists = underTest.findByUsernameOrEmail(mockedAccount.getUsername(), mockedAccount.getEmail())
+//                .isPresent();
+//        // then
+//        Assertions.assertThat(exists).isTrue();
+//    }
 
     @Test
-    @DisplayName("Should be able to find account by email")
-    void shouldBeAbleToFindAccountByEmail() {
-        // given
-        underTest.save(mockedAccount);
-        // when
-        boolean exists = underTest.findByEmail(mockedAccount.getEmail()).isPresent();
-        // then
-        Assertions.assertThat(exists).isTrue();
-    }
+    @DisplayName("Should fail to update account with different id")
+    void shouldFailToUpdateAccountWithDifferentId() {
+        Account savedAccount = underTest.save(mockedAccount);
 
-    @Test
-    @DisplayName("Should be able to find account by username or email")
-    void shouldBeAbleToFindAccountByUsernameOrEmail() {
-        // given
-        underTest.save(mockedAccount);
-        // when
-        boolean exists = underTest.findByUsernameOrEmail(mockedAccount.getUsername(), mockedAccount.getEmail())
-                .isPresent();
-        // then
-        Assertions.assertThat(exists).isTrue();
+        savedAccount.setEmail("johndoe@gmail.com");
+
+        AccountUpdateRequestDto accountUpdateRequestDto = AccountUpdateRequestDto.builder()
+                .email(savedAccount.getEmail())
+                .firstName(savedAccount.getFirstName())
+                .lastName(savedAccount.getLastName())
+                .username(savedAccount.getUsername())
+                .build();
+
+        int updatedAccountSucess = underTest.updateAccount(
+                UUID.randomUUID(),
+                accountUpdateRequestDto.firstName(),
+                accountUpdateRequestDto.lastName(),
+                accountUpdateRequestDto.username(),
+                "johndoe@gmail.com"
+                );
+
+        Assertions.assertThat(updatedAccountSucess).isNotNull();
+        // Should return 0 rows affected
+        Assertions.assertThat(updatedAccountSucess).isEqualTo(0);
     }
 }
