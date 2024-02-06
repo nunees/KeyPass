@@ -72,6 +72,33 @@ class AccountRepositoryUnitTest {
 //    }
 
     @Test
+    @DisplayName("Should be able to update an account")
+    void shouldBeAbleToUpdateAccount() {
+        Account savedAccount = underTest.save(mockedAccount);
+
+        savedAccount.setEmail("johndoe@gmail.com");
+
+        AccountUpdateRequestDto accountUpdateRequestDto = AccountUpdateRequestDto.builder()
+                .email(savedAccount.getEmail())
+                .firstName(savedAccount.getFirstName())
+                .lastName(savedAccount.getLastName())
+                .username(savedAccount.getUsername())
+                .build();
+
+        int updatedAccountSucess = underTest.updateAccount(
+                savedAccount.getId(),
+                accountUpdateRequestDto.firstName(),
+                accountUpdateRequestDto.lastName(),
+                accountUpdateRequestDto.username(),
+                "johndoe@gmail.com"
+        );
+
+        Assertions.assertThat(updatedAccountSucess).isNotNull();
+        // Should return 0 rows affected
+        Assertions.assertThat(updatedAccountSucess).isEqualTo(1);
+    }
+
+    @Test
     @DisplayName("Should fail to update account with different id")
     void shouldFailToUpdateAccountWithDifferentId() {
         Account savedAccount = underTest.save(mockedAccount);
@@ -91,7 +118,7 @@ class AccountRepositoryUnitTest {
                 accountUpdateRequestDto.lastName(),
                 accountUpdateRequestDto.username(),
                 "johndoe@gmail.com"
-                );
+        );
 
         Assertions.assertThat(updatedAccountSucess).isNotNull();
         // Should return 0 rows affected

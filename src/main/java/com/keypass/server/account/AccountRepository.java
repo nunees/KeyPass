@@ -25,8 +25,8 @@ public interface AccountRepository extends JpaRepository<Account, UUID> {
             "acc.email = :email " +
             "WHERE acc.id = :userId")
     int updateAccount(@Param("userId") UUID userId,
-                                    @Param("firstName") String firstName,
-                                    @Param("lastName") String lastName,
-                                    @Param("username") String username,
-                                    @Param("email") String email);
+                      @Param("firstName") String firstName,
+                      @Param("lastName") String lastName,
+                      @Param("username") String username,
+                      @Param("email") String email);
 }

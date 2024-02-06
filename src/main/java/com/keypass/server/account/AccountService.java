@@ -32,6 +32,28 @@ public class AccountService {
         return accountRepository.findByEmail(email).orElseThrow();
     }
 
+    public int updateAccount(UUID userId, AccountUpdateRequestDto accountUpdateRequestDto) {
+
+        Account accountStored = getAccountById(userId.toString()).orElse(null);
+
+        if (accountStored == null) {
+            return 0;
+        }
+
+        // TODO: implement a better way to do this
+        accountStored.setEmail(accountUpdateRequestDto.email());
+        accountStored.setUsername(accountUpdateRequestDto.username());
+        accountStored.setFirstName(accountUpdateRequestDto.firstName());
+        accountStored.setLastName(accountUpdateRequestDto.lastName());
+
+        return accountRepository.updateAccount(userId,
+                accountStored.getFirstName(),
+                accountStored.getLastName(),
+                accountStored.getUsername(),
+                accountStored.getEmail()
+        );
+    }
+
     public void deleteAccountById(String id) {
         accountRepository.deleteById(UUID.fromString(id));
     }
