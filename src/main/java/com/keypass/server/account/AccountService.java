@@ -28,6 +28,10 @@ public class AccountService {
 
     account.setEmail(accountRequestDto.email());
     account.setUsername(accountRequestDto.username());
+    account.setFirstName(accountRequestDto.firstName());
+    account.setLastName(accountRequestDto.lastName());
+    
+    return accountRepository.save(account);
   }
 
   public Optional<Account> getAccountById(String id) {
