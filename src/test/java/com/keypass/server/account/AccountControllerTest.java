@@ -148,11 +148,5 @@ class AccountControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
-    @DisplayName("Test controller that update a user by id [UPDATE]")
-    public void testControllerThatUpdateAUserById(){
-
-    }
-
 
 }

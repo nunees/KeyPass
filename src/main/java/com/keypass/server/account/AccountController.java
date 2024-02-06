@@ -83,35 +83,6 @@ public class AccountController {
     }
   }
 
-  @Operation(summary = "Update account by Id")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Account updated"),
-      @ApiResponse(responseCode = "400", description = "Account not found"),
-      @ApiResponse(responseCode = "500", description = "Bad Request")
-  })
-  @SecurityRequirement(name = "bearer-key")
-  @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Object> updateAccountById(@PathVariable("id") String id,
-      @RequestBody AccountRequestDto accountRequestDto) {
-    try {
-      Account account = accountService.getAccountById(id).orElseThrow(() -> {
-        throw new AccountControllerException("Account not found");
-      });
-
-      account.setFirstName(accountRequestDto.firstName());
-      account.setLastName(accountRequestDto.lastName());
-      account.setUsername(accountRequestDto.username());
-      account.setEmail(accountRequestDto.email());
-      account.setPassword(new BCryptPasswordEncoder().encode(accountRequestDto.password()));
-
-      accountService.create(account);
-
-      return ResponseEntity.ok(account);
-    } catch (AccountControllerException e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
-    }
-  }
-
   @Operation(summary = "Delete account by Id")
   @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Accountdeleted"),
       @ApiResponse(responseCode = "400", description = "Account not found"),

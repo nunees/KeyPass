@@ -15,19 +15,10 @@ public class AccountService {
 
   public Account create(Account account) {
     if(accountRepository.findByUsername(account.getUsername()).isPresent()
-            || accountRepository.findByEmail(account.getEmail()).isPresent()
-            || accountRepository.findById(account.getId()).isPresent())
+            || accountRepository.findByEmail(account.getEmail()).isPresent())
       throw new AccountControllerException("User already exists");
 
     return accountRepository.save(account);
-  }
-
-  public Account updateAccount(UUID userId, AccountRequestDto accountRequestDto){
-    Account account = accountRepository.findById(userId)
-            .orElseThrow(() -> new AccountControllerException("User not found"));
-
-    account.setEmail(accountRequestDto.email());
-    account.setUsername(accountRequestDto.username());
   }
 
   public Optional<Account> getAccountById(String id) {
