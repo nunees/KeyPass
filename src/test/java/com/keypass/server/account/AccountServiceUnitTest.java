@@ -1,147 +1,142 @@
 package com.keypass.server.account;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Account Service Unit Test")
 class AccountServiceUnitTest {
 
-        @Mock
-        private AccountRepository accountRepository;
+    @Mock
+    private AccountRepository accountRepository;
 
-        @InjectMocks
-        private AccountService underTest;
+    @InjectMocks
+    private AccountService underTest;
 
-        @Test
-        @DisplayName("Should be able to create a new account and return")
-        void shouldBeAbleToCreateANewAccountAndReturn() {
-                // given
-                Account account = Account.builder()
+    @Test
+    @DisplayName("Should be able to create a new account and return")
+    void shouldBeAbleToCreateANewAccountAndReturn() {
+        // given
+        Account account = Account.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .username("johndoe123")
+                .email("johndoe@test.com")
+                .password(new BCryptPasswordEncoder().encode("123123"))
+                .build();
+        // when
+        underTest.create(account);
+
+        // then
+        ArgumentCaptor<Account> accountArgumentCaptor = ArgumentCaptor.forClass(Account.class);
+        verify(accountRepository).save(accountArgumentCaptor.capture());
+        Account capturedAccount = accountArgumentCaptor.getValue();
+        assertThat(capturedAccount).isEqualTo(account);
+    }
+
+    @Test
+    @DisplayName("Should be able to get a account by Id")
+    void shouldBeAbleToGetAAccountById() {
+        // given
+        final UUID id = UUID.randomUUID();
+        final Account mockAccount = Account.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .username("johndoe123")
+                .email("johndoe@test.com")
+                .password(new BCryptPasswordEncoder().encode("123123"))
+                .build();
+
+        underTest.create(mockAccount);
+
+        // when
+        when(accountRepository.findById(id))
+                .thenReturn(Optional.of(
+                        Account.builder()
                                 .firstName("John")
                                 .lastName("Doe")
                                 .username("johndoe123")
                                 .email("johndoe@test.com")
                                 .password(new BCryptPasswordEncoder().encode("123123"))
-                                .build();
-                // when
-                underTest.create(account);
+                                .build()));
 
-                // then
-                ArgumentCaptor<Account> accountArgumentCaptor = ArgumentCaptor.forClass(Account.class);
-                verify(accountRepository).save(accountArgumentCaptor.capture());
-                Account capturedAccount = accountArgumentCaptor.getValue();
-                assertThat(capturedAccount).isEqualTo(account);
-        }
+        final Optional<Account> expected = underTest.getAccountById(id.toString());
+        final Account storedMockedData = expected.get();
 
-        @Test
-        @DisplayName("Should be able to get a account by Id")
-        void shouldBeAbleToGetAAccountById() {
-                // given
-                final UUID id = UUID.randomUUID();
-                final Account mockAccount = Account.builder()
+        assertThat(expected).isNotNull();
+        assertThat(storedMockedData).hasFieldOrProperty("id");
+    }
+
+    @Test
+    @DisplayName("Should be able to get a account by username")
+    void shouldBeAbleToGetAccountByUsername() {
+        final Account mockAccount = Account.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .username("johndoe123")
+                .email("johndoe@test.com")
+                .password(new BCryptPasswordEncoder().encode("123123"))
+                .build();
+
+        underTest.create(mockAccount);
+
+        // when
+        when(accountRepository.findByUsername("johndoe123"))
+                .thenReturn(Optional.of(
+                        Account.builder()
                                 .firstName("John")
                                 .lastName("Doe")
                                 .username("johndoe123")
                                 .email("johndoe@test.com")
                                 .password(new BCryptPasswordEncoder().encode("123123"))
-                                .build();
+                                .build()));
 
-                underTest.create(mockAccount);
+        final Account expected = underTest.getAccountByUsername("johndoe123");
 
-                // when
-                when(accountRepository.findById(id))
-                                .thenReturn(Optional.of(
-                                                Account.builder()
-                                                                .firstName("John")
-                                                                .lastName("Doe")
-                                                                .username("johndoe123")
-                                                                .email("johndoe@test.com")
-                                                                .password(new BCryptPasswordEncoder().encode("123123"))
-                                                                .build()));
+        assertThat(expected).isNotNull();
+        assertThat(expected).hasFieldOrProperty("id");
+    }
 
-                final Optional<Account> expected = underTest.getAccountById(id.toString());
-                final Account storedMockedData = expected.get();
+    @Test
+    @DisplayName("Should be able to get a account by email")
+    void shouldBeAbleToGetAccountByEmail() {
+        final Account mockAccount = Account.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .username("johndoe123")
+                .email("johndoe@test.com")
+                .password(new BCryptPasswordEncoder().encode("123123"))
+                .build();
 
-                assertThat(expected).isNotNull();
-                assertThat(storedMockedData).hasFieldOrProperty("id");
-        }
+        underTest.create(mockAccount);
 
-        @Test
-        @DisplayName("Should be able to get a account by username")
-        void shouldBeAbleToGetAccountByUsername() {
-                final Account mockAccount = Account.builder()
+        // when
+        when(accountRepository.findByEmail("johndoe@test.com"))
+                .thenReturn(Optional.of(
+                        Account.builder()
                                 .firstName("John")
                                 .lastName("Doe")
                                 .username("johndoe123")
                                 .email("johndoe@test.com")
                                 .password(new BCryptPasswordEncoder().encode("123123"))
-                                .build();
+                                .build()));
 
-                underTest.create(mockAccount);
+        final Account expected = underTest.getAccountByEmail("johndoe@test.com");
 
-                // when
-                when(accountRepository.findByUsername("johndoe123"))
-                                .thenReturn(Optional.of(
-                                                Account.builder()
-                                                                .firstName("John")
-                                                                .lastName("Doe")
-                                                                .username("johndoe123")
-                                                                .email("johndoe@test.com")
-                                                                .password(new BCryptPasswordEncoder().encode("123123"))
-                                                                .build()));
-
-                final Account expected = underTest.getAccountByUsername("johndoe123");
-
-                assertThat(expected).isNotNull();
-                assertThat(expected).hasFieldOrProperty("id");
-        }
-
-        @Test
-        @DisplayName("Should be able to get a account by email")
-        void shouldBeAbleToGetAccountByEmail() {
-                final Account mockAccount = Account.builder()
-                                .firstName("John")
-                                .lastName("Doe")
-                                .username("johndoe123")
-                                .email("johndoe@test.com")
-                                .password(new BCryptPasswordEncoder().encode("123123"))
-                                .build();
-
-                underTest.create(mockAccount);
-
-                // when
-                when(accountRepository.findByEmail("johndoe@test.com"))
-                                .thenReturn(Optional.of(
-                                                Account.builder()
-                                                                .firstName("John")
-                                                                .lastName("Doe")
-                                                                .username("johndoe123")
-                                                                .email("johndoe@test.com")
-                                                                .password(new BCryptPasswordEncoder().encode("123123"))
-                                                                .build()));
-
-                final Account expected = underTest.getAccountByEmail("johndoe@test.com");
-
-                assertThat(expected).isNotNull();
-                assertThat(expected).hasFieldOrProperty("id");
-        }
+        assertThat(expected).isNotNull();
+        assertThat(expected).hasFieldOrProperty("id");
+    }
 }

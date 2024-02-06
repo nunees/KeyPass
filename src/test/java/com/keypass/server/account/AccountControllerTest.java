@@ -12,13 +12,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.UUID;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -130,7 +129,7 @@ class AccountControllerTest {
 
     @Test
     @DisplayName("Test controller that failed to get an account By Id [GET]")
-    public void testControllerThatFailedToGetAnAccountById() throws Exception{
+    public void testControllerThatFailedToGetAnAccountById() throws Exception {
         this.mockMvc
                 .perform(
                         post("/accounts/register")

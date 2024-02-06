@@ -3,11 +3,10 @@ package com.keypass.server.account;
 import lombok.Builder;
 
 @Builder
-public record AccountRequestDto(
+public record AccountUpdateRequestDto(
         String firstName,
         String lastName,
         String username,
-        String email,
-        String password) {
-
+        String email
+) {
 }

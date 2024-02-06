@@ -1,12 +1,13 @@
 package com.keypass.server.config;
 
-import org.springframework.security.config.Customizer;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,11 +19,9 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 
-import org.springframework.beans.factory.annotation.Value;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 
 @Configuration
 @EnableWebSecurity
@@ -41,14 +40,14 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("sessions/**").permitAll()
-                .requestMatchers("refresh-token/**").permitAll()
-                .requestMatchers("accounts/register").permitAll()
-                .requestMatchers("api-docs/**").permitAll()
-                .requestMatchers("swagger-ui/**").permitAll()
-                .requestMatchers("v3/api-docs/**").permitAll()
-                .requestMatchers("h2-console/**").permitAll()
-                .anyRequest().authenticated())
+                        .requestMatchers("sessions/**").permitAll()
+                        .requestMatchers("refresh-token/**").permitAll()
+                        .requestMatchers("accounts/register").permitAll()
+                        .requestMatchers("api-docs/**").permitAll()
+                        .requestMatchers("swagger-ui/**").permitAll()
+                        .requestMatchers("v3/api-docs/**").permitAll()
+                        .requestMatchers("h2-console/**").permitAll()
+                        .anyRequest().authenticated())
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .oauth2ResourceServer(conf -> conf.jwt(Customizer.withDefaults()))
                 .csrf(AbstractHttpConfigurer::disable)

@@ -1,14 +1,9 @@
 package com.keypass.server.token;
 
-import com.keypass.server.account.Account;
-import com.keypass.server.account.AccountService;
-import org.springframework.http.ResponseEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
-
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.UUID;
 
 @Service

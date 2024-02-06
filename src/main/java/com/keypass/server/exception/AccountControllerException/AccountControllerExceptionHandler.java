@@ -13,9 +13,9 @@ import java.time.ZonedDateTime;
 public class AccountControllerExceptionHandler {
 
     @ExceptionHandler(value = {AccountControllerException.class})
-    public ResponseEntity<Object> handleAccountException(AccountControllerException a){
+    public ResponseEntity<Object> handleAccountException(AccountControllerException a) {
         HttpStatus badRequest = HttpStatus.BAD_REQUEST;
         APIException apiException = new APIException(a.getMessage(), badRequest, ZonedDateTime.now(ZoneId.of("z")));
-        return new ResponseEntity<>(apiException,badRequest);
+        return new ResponseEntity<>(apiException, badRequest);
     }
 }
