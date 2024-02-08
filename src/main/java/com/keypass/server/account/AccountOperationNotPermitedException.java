@@ -1,4 +1,4 @@
-package com.keypass.server.account.exception;
+package com.keypass.server.account;
 
 public class AccountOperationNotPermitedException extends RuntimeException {
     public AccountOperationNotPermitedException(String message){

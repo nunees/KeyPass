@@ -1,4 +1,4 @@
-package com.keypass.server.config;
+package com.keypass.server.common.config;
 
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -35,6 +35,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
             throws Exception {
+        System.out.println(authenticationConfiguration);
         return authenticationConfiguration.getAuthenticationManager();
     }
 
@@ -57,7 +58,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    JwtDecoder jwtDecoder() {
+    JwtDecoder jwtDecoder() throws Exception {
         return NimbusJwtDecoder.withPublicKey(publicKey).build();
     }
 

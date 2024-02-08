@@ -1,4 +1,4 @@
-package com.keypass.server.account.exception;
+package com.keypass.server.account;
 
 public class AccountNotFoundException extends RuntimeException{
     public AccountNotFoundException(String message){

@@ -1,7 +1,7 @@
 package com.keypass.server.token;
 
 import com.keypass.server.account.Account;
-import com.keypass.server.account.AccountService;
+import com.keypass.server.account.impl.AccountServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,7 +27,7 @@ public class JwtService {
     @Value("${application.security.jwt.issuer}")
     private String tokenIssuer;
 
-    public JwtService(JwtEncoder encoder, RefreshTokenService refreshTokenService, AccountService accountService) {
+    public JwtService(JwtEncoder encoder, RefreshTokenService refreshTokenService, AccountServiceImpl accountServiceImpl) {
         this.encoder = encoder;
     }
 

@@ -2,8 +2,7 @@ package com.keypass.server.account;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.keypass.server.account.dto.AccountRequestDto;
-import com.keypass.server.utils.JsonConverter;
+import com.keypass.server.common.utils.JsonConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +33,7 @@ class AccountControllerTest {
 
     private Account mockedAccount;
 
-    private AccountRequestDto accountRequestDto;
+    private AccountRequestDTO accountRequestDto;
 
     // TODO: Need to find a way to delete the current user every time a test runs
     @BeforeEach
@@ -47,7 +46,7 @@ class AccountControllerTest {
                 .password("123123")
                 .build();
 
-        accountRequestDto = AccountRequestDto.builder()
+        accountRequestDto = AccountRequestDTO.builder()
                 .firstName(mockedAccount.getFirstName())
                 .lastName(mockedAccount.getLastName())
                 .username(mockedAccount.getUsername())

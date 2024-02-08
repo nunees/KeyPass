@@ -1,7 +1,7 @@
 package com.keypass.server.token;
 
 import com.keypass.server.account.Account;
-import com.keypass.server.account.AccountService;
+import com.keypass.server.account.impl.AccountServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -19,7 +19,7 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 public class RefreshTokenController {
     private final RefreshTokenService refreshTokenService;
-    private final AccountService accountService;
+    private final AccountServiceImpl accountServiceImpl;
     private final JwtService jwtService;
 
     @Operation(summary = "Create a new refresh token")
@@ -30,7 +30,7 @@ public class RefreshTokenController {
     public ResponseEntity<Object> create(@PathVariable("userId") String userId,
                                          @RequestBody RefreshTokenRequestDto refreshTokenRequestDto) {
         try {
-            Account account = accountService.getAccountById(userId).orElseThrow();
+            Account account = accountServiceImpl.getAccountById(userId).orElseThrow();
 
             RefreshToken storedRefreshToken = refreshTokenService.findRefreshTokenByUserId(account.getId().toString());
             if (storedRefreshToken == null) {

@@ -1,6 +1,5 @@
 package com.keypass.server.account;
 
-import com.keypass.server.account.dto.AccountUpdateRequestDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,14 +78,14 @@ class AccountRepositoryUnitTest {
 
         savedAccount.setEmail("johndoe@gmail.com");
 
-        AccountUpdateRequestDto accountUpdateRequestDto = AccountUpdateRequestDto.builder()
+        AccountUpdateDTO accountUpdateDTO = AccountUpdateDTO.builder()
                 .email("somerandomemail@mail.com")
                 .firstName(savedAccount.getFirstName())
                 .lastName(savedAccount.getLastName())
                 .username(savedAccount.getUsername())
                 .build();
 
-        int updatedAccountSuccess = underTest.updateAccountById(savedAccount.getId(), accountUpdateRequestDto);
+        int updatedAccountSuccess = underTest.updateAccountById(savedAccount.getId(), accountUpdateDTO);
 
         Assertions.assertThat(updatedAccountSuccess).isNotNull();
         // Should return 0 rows affected
@@ -100,14 +99,14 @@ class AccountRepositoryUnitTest {
 
         savedAccount.setEmail("johndoe@gmail.com");
 
-        AccountUpdateRequestDto accountUpdateRequestDto = AccountUpdateRequestDto.builder()
+        AccountUpdateDTO accountUpdateDTO = AccountUpdateDTO.builder()
                 .email(savedAccount.getEmail())
                 .firstName(savedAccount.getFirstName())
                 .lastName(savedAccount.getLastName())
                 .username(savedAccount.getUsername())
                 .build();
 
-        int updatedAccountSucess = underTest.updateAccountById(UUID.randomUUID(), accountUpdateRequestDto);
+        int updatedAccountSucess = underTest.updateAccountById(UUID.randomUUID(), accountUpdateDTO);
 
         Assertions.assertThat(updatedAccountSucess).isNotNull();
         // Should return 0 rows affected

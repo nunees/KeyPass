@@ -1,7 +1,7 @@
-package com.keypass.server.account.exception;
+package com.keypass.server.account;
 
-import com.keypass.server.exception.GeneralResponseDTO;
-import com.keypass.server.exception.MissingFieldsException;
+import com.keypass.server.common.exception.GeneralResponseDTO;
+import com.keypass.server.common.exception.MissingFieldsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

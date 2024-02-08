@@ -1,7 +1,7 @@
 package com.keypass.server.vault;
 
 import com.keypass.server.account.Account;
-import com.keypass.server.account.AccountService;
+import com.keypass.server.account.impl.AccountServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class VaultController {
     private final VaultService vaultService;
-    private final AccountService accountService;
+    private final AccountServiceImpl accountServiceImpl;
 
     @PostMapping("/new/{userId}")
     public ResponseEntity<Object> createNewVault(@RequestBody VaultRequestDto vaultRequestDto, @PathVariable String userId) {
-        Account account = accountService.getAccountById(userId).orElseThrow();
+        Account account = accountServiceImpl.getAccountById(userId).orElseThrow();
 
         if (!vaultRequestDto.password().equals(vaultRequestDto.confirmPassword())) {
             return ResponseEntity.status(400).body("Password mismatch");

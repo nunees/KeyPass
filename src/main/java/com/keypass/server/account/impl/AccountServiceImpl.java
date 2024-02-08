@@ -1,7 +1,6 @@
-package com.keypass.server.account;
+package com.keypass.server.account.impl;
 
-import com.keypass.server.account.dto.AccountUpdateRequestDto;
-import com.keypass.server.account.exception.AccountAlreadyExistException;
+import com.keypass.server.account.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,15 +10,15 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class AccountService {
+public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
 
     public Account create(Account account) {
-        if(getAccountByEmail(account.getEmail()) != null){
+        if (getAccountByEmail(account.getEmail()) != null) {
             throw new AccountAlreadyExistException("Email already in use");
         }
 
-        if(getAccountByUsername(account.getUsername()) != null){
+        if (getAccountByUsername(account.getUsername()) != null) {
             throw new AccountAlreadyExistException("Username already taken");
         }
 
@@ -35,19 +34,19 @@ public class AccountService {
     }
 
     public Account getAccountByEmail(String email) {
-       return accountRepository.findByEmail(email).orElse(null);
+        return accountRepository.findByEmail(email).orElse(null);
     }
 
     @Transactional
-    public int updateAccount(UUID userId, AccountUpdateRequestDto accountUpdateRequestDto) {
+    public int updateAccount(UUID userId, AccountUpdateDTO accountUpdateDTO) {
 
         Account accountStored = getAccountById(userId.toString()).orElse(null);
 
-        if (accountStored == null || accountUpdateRequestDto == null) {
+        if (accountStored == null || accountUpdateDTO == null) {
             return 0;
         }
 
-        return accountRepository.updateAccountById(userId, accountUpdateRequestDto);
+        return accountRepository.updateAccountById(userId, accountUpdateDTO);
 
     }
 

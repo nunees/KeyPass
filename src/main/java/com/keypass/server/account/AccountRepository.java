@@ -1,8 +1,5 @@
 package com.keypass.server.account;
 
-import com.keypass.server.account.dto.AccountRequestDto;
-import com.keypass.server.account.dto.AccountUpdateRequestDto;
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -40,5 +37,5 @@ public interface AccountRepository extends JpaRepository<Account, UUID> {
             "acc.username = :#{#accountRequestDto.username()}," +
             "acc.email = :#{#accountRequestDto.email()} " +
             "WHERE acc.id = :userId")
-    int updateAccountById(@Param("userId") UUID userId,  @Param("accountRequestDto") AccountUpdateRequestDto accountRequestDto);
+    int updateAccountById(@Param("userId") UUID userId,  @Param("accountRequestDto") AccountUpdateDTO accountRequestDto);
 }

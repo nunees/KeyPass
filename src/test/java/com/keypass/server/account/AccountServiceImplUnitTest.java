@@ -1,6 +1,6 @@
 package com.keypass.server.account;
 
-import com.keypass.server.account.dto.AccountUpdateRequestDto;
+import com.keypass.server.account.impl.AccountServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,13 +26,13 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Account Service Unit Test")
 @RequiredArgsConstructor
-class AccountServiceUnitTest {
+class AccountServiceImplUnitTest {
 
     @Mock
     private AccountRepository accountRepository;
 
     @InjectMocks
-    private AccountService underTest;
+    private AccountServiceImpl underTest;
 
     @InjectMocks
     private ModelMapper modelMapper;
@@ -129,20 +129,20 @@ class AccountServiceUnitTest {
         account.setEmail("johndoe@gmail.com");
         account.setUsername("john_doe");
 
-        AccountUpdateRequestDto accountUpdateRequestDto =
-                new AccountUpdateRequestDto(
+        AccountUpdateDTO accountUpdateDTO =
+                new AccountUpdateDTO(
                         account.getFirstName(),
                         account.getLastName(),
                         account.getUsername(),
                         account.getEmail()
                 );
 
-        underTest.updateAccount(account.getId(), accountUpdateRequestDto);
+        underTest.updateAccount(account.getId(), accountUpdateDTO);
 
-        when(accountRepository.updateAccountById(account.getId(), accountUpdateRequestDto)).thenReturn(1);
+        when(accountRepository.updateAccountById(account.getId(), accountUpdateDTO)).thenReturn(1);
 
         final int rowsInserted = underTest.updateAccount(
-                account.getId(), accountUpdateRequestDto);
+                account.getId(), accountUpdateDTO);
 
         assertThat(rowsInserted).isEqualTo(1);
     }
@@ -159,18 +159,18 @@ class AccountServiceUnitTest {
         account.setEmail("johndoe@gmail.com");
         account.setUsername("john_doe");
 
-        AccountUpdateRequestDto accountUpdateRequestDto =
-                new AccountUpdateRequestDto(
+        AccountUpdateDTO accountUpdateDTO =
+                new AccountUpdateDTO(
                         account.getFirstName(),
                         account.getLastName(),
                         account.getUsername(),
                         account.getEmail()
                 );
 
-        underTest.updateAccount(UUID.randomUUID(), accountUpdateRequestDto);
+        underTest.updateAccount(UUID.randomUUID(), accountUpdateDTO);
 
         final int rowsInserted = underTest.updateAccount(
-                UUID.randomUUID(), accountUpdateRequestDto);
+                UUID.randomUUID(), accountUpdateDTO);
 
         assertThat(rowsInserted).isEqualTo(0);
     }
