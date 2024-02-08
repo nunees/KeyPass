@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/keypass
+    username: docker
+    password: docker
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+application:
+  security:
+    jwt:
+      private-key: classpath:keys/private-key.pem
+      public-key: classpath:keys/public-key.pem
+      access:
+        token:
+          expiresIn: 3600
+      refresh:
+        token:
+          expiresIn: 1296000
+      issuer: keypass-server
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    path: /api-docs

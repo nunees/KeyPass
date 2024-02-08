@@ -2,9 +2,8 @@ package com.keypass.server.account;
 
 import com.keypass.server.account.dto.AccountRequestDto;
 import com.keypass.server.account.dto.AccountResponseDto;
-import com.keypass.server.account.dto.AccountExceptionResponseDTO;
 import com.keypass.server.account.exception.AccountAlreadyExistException;
-import com.keypass.server.exception.GeneralException;
+import com.keypass.server.exception.GeneralResponseDTO;
 import com.keypass.server.exception.MissingFieldsException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,21 +37,21 @@ public class AccountController {
                     }),
                     @ApiResponse(responseCode = "401", description = "User Already Exists", content = {
                             @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,schema =
-                            @Schema(implementation = AccountExceptionResponseDTO.class))
+                            @Schema(implementation = GeneralResponseDTO.class))
                     }),
                     @ApiResponse(responseCode = "400", description = "Blank fields on form", content = {
                             @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,schema =
-                            @Schema(implementation = MissingFieldsException.class))
+                            @Schema(implementation = GeneralResponseDTO.class))
                     }),
                     @ApiResponse(responseCode = "500", description = "Bad Request", content = {
                             @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,schema =
-                            @Schema(implementation = GeneralException.class))
+                            @Schema(implementation = GeneralResponseDTO.class))
                     })
             }
     )
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/register")
-    public ResponseEntity<AccountResponseDto> create(@RequestBody AccountRequestDto accountRequestDto) throws GeneralException {
+    public ResponseEntity<AccountResponseDto> create(@RequestBody AccountRequestDto accountRequestDto) {
 
                if(accountRequestDto.firstName() == null
                        || accountRequestDto.lastName() == null
