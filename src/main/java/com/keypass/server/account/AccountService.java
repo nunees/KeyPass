@@ -1,6 +1,7 @@
 package com.keypass.server.account;
 
-import com.keypass.server.exception.AccountControllerException.AccountControllerException;
+import com.keypass.server.account.dto.AccountUpdateRequestDto;
+import com.keypass.server.account.exception.AccountAlreadyExistException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +14,13 @@ public class AccountService {
     private final AccountRepository accountRepository;
 
     public Account create(Account account) {
-        if (accountRepository.findByUsername(account.getUsername()).isPresent()
-                || accountRepository.findByEmail(account.getEmail()).isPresent())
-            throw new AccountControllerException("User already exists");
+        if(getAccountByEmail(account.getEmail()).getEmail().equals(account.getEmail())){
+            throw new AccountAlreadyExistException("Email already in use");
+        }
+
+        if(getAccountByUsername(account.getUsername()).getUsername().equals(account.getUsername())){
+            throw new AccountAlreadyExistException("Username already taken");
+        }
 
         return accountRepository.save(account);
     }

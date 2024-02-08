@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -47,6 +48,7 @@ public class SecurityConfig {
                         .requestMatchers("swagger-ui/**").permitAll()
                         .requestMatchers("v3/api-docs/**").permitAll()
                         .requestMatchers("h2-console/**").permitAll()
+                        .requestMatchers("actuator/**").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .oauth2ResourceServer(conf -> conf.jwt(Customizer.withDefaults()))

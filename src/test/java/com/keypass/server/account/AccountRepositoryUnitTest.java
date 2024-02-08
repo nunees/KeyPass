@@ -1,5 +1,6 @@
 package com.keypass.server.account;
 
+import com.keypass.server.account.dto.AccountUpdateRequestDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
