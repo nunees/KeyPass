@@ -139,13 +139,7 @@ class AccountServiceUnitTest {
 
         underTest.updateAccount(account.getId(), accountUpdateRequestDto);
 
-        when(accountRepository.updateAccount(
-                account.getId(),
-                accountUpdateRequestDto.firstName(),
-                accountUpdateRequestDto.lastName(),
-                accountUpdateRequestDto.username(),
-                accountUpdateRequestDto.email()))
-                .thenReturn(1);
+        when(accountRepository.updateAccountById(account.getId(), accountUpdateRequestDto)).thenReturn(1);
 
         final int rowsInserted = underTest.updateAccount(
                 account.getId(), accountUpdateRequestDto);

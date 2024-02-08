@@ -4,6 +4,7 @@ import com.keypass.server.account.dto.AccountUpdateRequestDto;
 import com.keypass.server.account.exception.AccountAlreadyExistException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -14,11 +15,11 @@ public class AccountService {
     private final AccountRepository accountRepository;
 
     public Account create(Account account) {
-        if(getAccountByEmail(account.getEmail()).getEmail().equals(account.getEmail())){
+        if(getAccountByEmail(account.getEmail()) != null){
             throw new AccountAlreadyExistException("Email already in use");
         }
 
-        if(getAccountByUsername(account.getUsername()).getUsername().equals(account.getUsername())){
+        if(getAccountByUsername(account.getUsername()) != null){
             throw new AccountAlreadyExistException("Username already taken");
         }
 
@@ -30,33 +31,24 @@ public class AccountService {
     }
 
     public Account getAccountByUsername(String username) {
-        return accountRepository.findByUsername(username).orElseThrow();
+        return accountRepository.findByUsername(username).orElse(null);
     }
 
     public Account getAccountByEmail(String email) {
-        return accountRepository.findByEmail(email).orElseThrow();
+       return accountRepository.findByEmail(email).orElse(null);
     }
 
+    @Transactional
     public int updateAccount(UUID userId, AccountUpdateRequestDto accountUpdateRequestDto) {
 
         Account accountStored = getAccountById(userId.toString()).orElse(null);
 
-        if (accountStored == null) {
+        if (accountStored == null || accountUpdateRequestDto == null) {
             return 0;
         }
 
-        // TODO: implement a better way to do this
-        accountStored.setEmail(accountUpdateRequestDto.email());
-        accountStored.setUsername(accountUpdateRequestDto.username());
-        accountStored.setFirstName(accountUpdateRequestDto.firstName());
-        accountStored.setLastName(accountUpdateRequestDto.lastName());
+        return accountRepository.updateAccountById(userId, accountUpdateRequestDto);
 
-        return accountRepository.updateAccount(userId,
-                accountStored.getFirstName(),
-                accountStored.getLastName(),
-                accountStored.getUsername(),
-                accountStored.getEmail()
-        );
     }
 
     public void deleteAccountById(String id) {

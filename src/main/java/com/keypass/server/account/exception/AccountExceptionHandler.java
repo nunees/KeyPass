@@ -24,4 +24,16 @@ public class AccountExceptionHandler {
         GeneralResponseDTO generalResponseDTO = new GeneralResponseDTO(HttpStatus.BAD_REQUEST.value(),m.getMessage(),ZonedDateTime.now(ZoneId.of("Z")));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(generalResponseDTO);
     }
+
+    @ExceptionHandler(value = {AccountOperationNotPermitedException.class})
+    public ResponseEntity<Object> handleOperationNotPermited(AccountOperationNotPermitedException a){
+        GeneralResponseDTO generalResponseDTO = new GeneralResponseDTO(HttpStatus.UNAUTHORIZED.value(), a.getMessage(), ZonedDateTime.now(ZoneId.of("Z")));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(generalResponseDTO);
+    }
+
+    @ExceptionHandler(value = {AccountNotFoundException.class})
+    public ResponseEntity<Object> handleAccountNotFoundException(AccountNotFoundException a){
+        GeneralResponseDTO generalResponseDTO = new GeneralResponseDTO(HttpStatus.NOT_FOUND.value(), a.getMessage(), ZonedDateTime.now(ZoneId.of("Z")));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(generalResponseDTO);
+    }
 }

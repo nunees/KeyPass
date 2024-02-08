@@ -80,23 +80,17 @@ class AccountRepositoryUnitTest {
         savedAccount.setEmail("johndoe@gmail.com");
 
         AccountUpdateRequestDto accountUpdateRequestDto = AccountUpdateRequestDto.builder()
-                .email(savedAccount.getEmail())
+                .email("somerandomemail@mail.com")
                 .firstName(savedAccount.getFirstName())
                 .lastName(savedAccount.getLastName())
                 .username(savedAccount.getUsername())
                 .build();
 
-        int updatedAccountSucess = underTest.updateAccount(
-                savedAccount.getId(),
-                accountUpdateRequestDto.firstName(),
-                accountUpdateRequestDto.lastName(),
-                accountUpdateRequestDto.username(),
-                "johndoe@gmail.com"
-        );
+        int updatedAccountSuccess = underTest.updateAccountById(savedAccount.getId(), accountUpdateRequestDto);
 
-        Assertions.assertThat(updatedAccountSucess).isNotNull();
+        Assertions.assertThat(updatedAccountSuccess).isNotNull();
         // Should return 0 rows affected
-        Assertions.assertThat(updatedAccountSucess).isEqualTo(1);
+        Assertions.assertThat(updatedAccountSuccess).isEqualTo(1);
     }
 
     @Test
@@ -113,13 +107,7 @@ class AccountRepositoryUnitTest {
                 .username(savedAccount.getUsername())
                 .build();
 
-        int updatedAccountSucess = underTest.updateAccount(
-                UUID.randomUUID(),
-                accountUpdateRequestDto.firstName(),
-                accountUpdateRequestDto.lastName(),
-                accountUpdateRequestDto.username(),
-                "johndoe@gmail.com"
-        );
+        int updatedAccountSucess = underTest.updateAccountById(UUID.randomUUID(), accountUpdateRequestDto);
 
         Assertions.assertThat(updatedAccountSucess).isNotNull();
         // Should return 0 rows affected
