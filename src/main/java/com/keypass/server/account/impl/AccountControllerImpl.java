@@ -51,25 +51,15 @@ public class AccountControllerImpl implements AccountController {
 
     public ResponseEntity<Object> getAccountById(@PathVariable("id") String userId) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Account userAccount = accountServiceImpl.getAccountByUsername(authentication.getName());
+        Account userAccount = accountServiceImpl.getAccountById(userId).orElse(null);
 
-        if (userAccount.getId().equals(UUID.fromString(userId))) {
+        if (userAccount != null) {
             return ResponseEntity.ok().body(new AccountResponseDTO(userAccount.getId(), userAccount.getFirstName(), userAccount.getLastName(), userAccount.getUsername(), userAccount.getEmail()));
         }
 
         return ResponseEntity.notFound().build();
     }
 
-
-    public ResponseEntity<Object> deleteAccountById(@PathVariable("id") String id) {
-
-        Account account = accountServiceImpl.getAccountById(id).orElseThrow(() -> new AccountAlreadyExistException("Account not found"));
-
-        accountServiceImpl.deleteAccountById(account.getId().toString());
-
-        return ResponseEntity.ok(account);
-    }
 
 
     public ResponseEntity<Object> updateUserAccount(@PathVariable("id") UUID userId, @RequestBody AccountUpdateDTO accountUpdateDTO) {
@@ -78,8 +68,7 @@ public class AccountControllerImpl implements AccountController {
             throw new MissingFieldsException("Check for blank fields on the form");
         }
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Account userAccount = accountServiceImpl.getAccountByUsername(authentication.getName());
+        Account userAccount = accountServiceImpl.getAccountById(userId.toString()).orElse(null);
 
         if (userAccount == null || !userAccount.getId().equals(userId)) {
             throw new AccountOperationNotPermitedException("Operation not allowed");

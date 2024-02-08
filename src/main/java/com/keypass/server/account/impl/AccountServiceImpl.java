@@ -1,7 +1,9 @@
 package com.keypass.server.account.impl;
 
 import com.keypass.server.account.*;
+import com.keypass.server.common.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,10 +50,6 @@ public class AccountServiceImpl implements AccountService {
 
         return accountRepository.updateAccountById(userId, accountUpdateDTO);
 
-    }
-
-    public void deleteAccountById(String id) {
-        accountRepository.deleteById(UUID.fromString(id));
     }
 
 }

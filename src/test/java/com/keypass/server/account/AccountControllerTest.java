@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.UUID;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -31,9 +32,9 @@ class AccountControllerTest {
     @Autowired
     private AccountRepository accountRepository;
 
-    private Account mockedAccount;
-
     private AccountRequestDTO accountRequestDto;
+
+    private Account mockedAccount;
 
     // TODO: Need to find a way to delete the current user every time a test runs
     @BeforeEach
@@ -58,8 +59,8 @@ class AccountControllerTest {
     }
 
     @Test
-    @DisplayName("Test controller that successfully creates a new account [POST]")
-    void testControllerThatSuccessfullyCreatesNewAccount() throws Exception {
+    @DisplayName("[POST] Should be able to create a new account through controller")
+    void shouldBeAbleToCreateANewAccountThroughController() throws Exception {
         this.mockMvc
                 .perform(
                         post("/accounts/register")
@@ -74,8 +75,8 @@ class AccountControllerTest {
     }
 
     @Test
-    @DisplayName("Test controller that fails to create a new account with an existing username or email [POST]")
-    void testControllerThatFailsToCreateNewAccountWithExistingUsername() throws Exception {
+    @DisplayName("[POST] Should failed if try to create an account with username or password already in use")
+    void shouldFailedIfTryToCreateAnAccountWithUsernameOrPasswordAlreadyInUse() throws Exception {
         this.mockMvc
                 .perform(
                         post("/accounts/register")
@@ -98,8 +99,8 @@ class AccountControllerTest {
     }
 
     @Test
-    @DisplayName("Test controller that get an account by Id [GET]")
-    public void testControllerThatGetAnAccountById() throws Exception {
+    @DisplayName("[GET] Should get an account by id")
+    public void shouldGetAnAccountById() throws Exception {
         MvcResult insertedData = this.mockMvc
                 .perform(
                         post("/accounts/register")
@@ -128,8 +129,8 @@ class AccountControllerTest {
     }
 
     @Test
-    @DisplayName("Test controller that failed to get an account By Id [GET]")
-    public void testControllerThatFailedToGetAnAccountById() throws Exception {
+    @DisplayName("[GET] Should fail get an account with non-existent account")
+    public void shouldFailGetAnAccountWithNonExistentAccount() throws Exception {
         this.mockMvc
                 .perform(
                         post("/accounts/register")
@@ -144,7 +145,66 @@ class AccountControllerTest {
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(JsonConverter.convertToJson(accountRequestDto)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("[PUT] Should update an account")
+    public void shouldUpdateAnAccount() throws Exception{
+        MvcResult insertedData = this.mockMvc
+                .perform(
+                        post("/accounts/register")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(JsonConverter.convertToJson(accountRequestDto)))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        mockedAccount.setUsername("otherusername@gmail.com");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(insertedData.getResponse().getContentAsString());
+        String userCreatedUUID = jsonNode.path("id").asText();
+
+        this.mockMvc
+                .perform(
+                        put("/accounts/" + userCreatedUUID)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(JsonConverter.convertToJson(accountRequestDto)))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Operation succeeded"));
+
+    }
+
+    @Test
+    @DisplayName("[PUT] Should not update an account with different id")
+    public void shouldNotUpdateAnAccountWithDifferentId() throws Exception{
+        MvcResult insertedData = this.mockMvc
+                .perform(
+                        post("/accounts/register")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(JsonConverter.convertToJson(accountRequestDto)))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        mockedAccount.setUsername("otherusername@gmail.com");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(insertedData.getResponse().getContentAsString());
+        String userCreatedUUID = jsonNode.path("id").asText();
+
+        this.mockMvc
+                .perform(
+                        put("/accounts/" + UUID.randomUUID())
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(JsonConverter.convertToJson(accountRequestDto)))
                 .andExpect(status().isUnauthorized());
+
     }
 
 

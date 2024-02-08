@@ -12,7 +12,6 @@ public interface AccountService {
 
     public int updateAccount(UUID userId, AccountUpdateDTO accountUpdateDTO);
 
-    public void deleteAccountById(String id);
 }
 
 

@@ -25,12 +25,6 @@ public interface AccountController {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getAccountById(@PathVariable("id") String userId);
 
-    @Operation(summary = "Delete account controller", description = "Delete an existing user account", tags = {"account", "delete"}, responses = {@ApiResponse(responseCode = "200", description = "Deleted", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = AccountResponseDTO.class))}), @ApiResponse(responseCode = "400", description = "Blank fields on form", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = com.keypass.server.common.exception.GeneralResponseDTO.class))}), @ApiResponse(responseCode = "500", description = "Bad Request", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = com.keypass.server.common.exception.GeneralResponseDTO.class))})})
-    @SecurityRequirement(name = "bearer-key")
-    @ResponseStatus(HttpStatus.OK)
-    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> deleteAccountById(@PathVariable("id") String id);
-
     @Operation(summary = "Update account controller", description = "Update an existing user account", tags = {"account", "update"}, responses = {@ApiResponse(responseCode = "200", description = "Updated", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = AccountResponseDTO.class))}), @ApiResponse(responseCode = "400", description = "Blank fields on form", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = com.keypass.server.common.exception.GeneralResponseDTO.class))}), @ApiResponse(responseCode = "400", description = "User not allowed", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = com.keypass.server.common.exception.GeneralResponseDTO.class))}), @ApiResponse(responseCode = "500", description = "Bad Request", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = com.keypass.server.common.exception.GeneralResponseDTO.class))})})
     @SecurityRequirement(name = "bearer-key")
     @ResponseStatus(HttpStatus.OK)

@@ -1,6 +1,7 @@
 package com.keypass.server.account;
 
 import com.keypass.server.account.impl.AccountServiceImpl;
+import com.keypass.server.common.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,14 +13,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.*;
 
 // When creating tests use the context: given -> when -> then
 
@@ -154,7 +158,7 @@ class AccountServiceImplUnitTest {
 
         when(accountRepository.findById(account.getId())).thenReturn(Optional.of(account));
 
-        underTest.getAccountById(account.getId().toString()).orElseThrow();
+        underTest.getAccountById(account.getId().toString());
 
         account.setEmail("johndoe@gmail.com");
         account.setUsername("john_doe");
@@ -174,4 +178,5 @@ class AccountServiceImplUnitTest {
 
         assertThat(rowsInserted).isEqualTo(0);
     }
+
 }
