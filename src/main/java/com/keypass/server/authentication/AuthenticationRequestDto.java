@@ -1,7 +1,4 @@
 package com.keypass.server.authentication;
 
-public record AuthenticationRequestDto(
-        String username,
-        String password
-) {
+public record AuthenticationRequestDto(String username, String password) {
 }

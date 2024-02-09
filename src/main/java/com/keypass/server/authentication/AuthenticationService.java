@@ -27,11 +27,8 @@ public class AuthenticationService {
 
         LocalDateTime expiresIn = LocalDateTime.now().plusSeconds(1296000L);
 
-        RefreshToken savedRefreshToken = RefreshToken.builder()
-                .token(tokens.get("refreshToken").toString())
-                .account(currentUser)
-                .expiresIn(expiresIn)
-                .build();
+        RefreshToken savedRefreshToken = RefreshToken.builder().token(tokens.get("refreshToken").toString())
+                .account(currentUser).expiresIn(expiresIn).build();
 
         refreshTokenService.save(savedRefreshToken);
 

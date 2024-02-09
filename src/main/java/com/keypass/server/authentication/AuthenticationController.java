@@ -25,7 +25,6 @@ public class AuthenticationController {
     @Autowired
     private final AuthenticationManager authenticationManager;
 
-
     @Operation(summary = "Create a new session")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Session created"),

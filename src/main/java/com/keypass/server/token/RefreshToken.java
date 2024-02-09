@@ -28,7 +28,7 @@ public class RefreshToken {
     @Column(nullable = false)
     private LocalDateTime expiresIn;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, targetEntity = Account.class)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     private Account account;
 
